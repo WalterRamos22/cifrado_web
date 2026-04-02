@@ -1,4 +1,4 @@
---Conexion desde python hacia el servidor--
+# Conexion desde python hacia el servidor
 import pyodbc
 
 def conectar():
