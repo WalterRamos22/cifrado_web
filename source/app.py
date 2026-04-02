@@ -135,7 +135,7 @@ def cifrar():
         conexion.close()
 
         # Mostrar token al usuario
-        return f"Texto cifrado correctamente 🔐<br>Token: {token}"
+        return f"Texto cifrado correctamente <br>Token: {token}"
 
     return render_template("cifrar.html")
 
