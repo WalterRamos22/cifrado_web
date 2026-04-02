@@ -190,6 +190,28 @@ def descifrar():
     return render_template("descifrar.html")
 
 
+# HISTORIAL
+@app.route("/historial")
+def historial():
+    if "usuario_id" not in session:
+        return redirect("/")
+
+    conexion = conectar()
+    cursor = conexion.cursor()
+
+    cursor.execute("""
+        SELECT h.token, h.fecha_consulta
+        FROM historial h
+        WHERE h.usuario_id = ?
+        ORDER BY h.fecha_consulta DESC
+    """, (session["usuario_id"],))
+
+    datos = cursor.fetchall()
+    conexion.close()
+
+    return render_template("historial.html", datos=datos)
+
+
 # EJECUCIÓN DE LA APP
 # Este bloque inicia el servidor Flask
 if __name__ == "__main__":
