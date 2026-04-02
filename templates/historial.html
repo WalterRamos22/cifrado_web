@@ -1,1 +1,17 @@
+<h2>Historial</h2>
 
+<table border="1">
+<tr>
+    <th>Token</th>
+    <th>Fecha</th>
+</tr>
+
+{% for d in datos %}
+<tr>
+    <td>{{ d[0] }}</td>
+    <td>{{ d[1] }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<a href="/home">Volver</a>
