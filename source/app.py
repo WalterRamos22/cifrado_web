@@ -135,9 +135,59 @@ def cifrar():
         conexion.close()
 
         # Mostrar token al usuario
-        return f"Texto cifrado correctamente <br>Token: {token}"
+        return f"Texto cifrado correctamente 🔐<br>Token: {token}"
 
     return render_template("cifrar.html")
+
+
+# DESCIFRAR POR TOKEN
+@app.route("/descifrar", methods=["GET", "POST"])
+def descifrar():
+    if "usuario_id" not in session:
+        return redirect("/")
+
+    if request.method == "POST":
+        token = request.form["token"]
+
+        conexion = conectar()
+        cursor = conexion.cursor()
+
+        # Buscar el texto por token
+        cursor.execute(
+            "SELECT * FROM textos WHERE token=?",
+            (token,)
+        )
+
+        texto = cursor.fetchone()
+
+        if texto:
+            texto_original = texto[1]
+            texto_cifrado = texto[2]
+            fecha = texto[4]
+            texto_id = texto[0]
+
+            # Descifrar
+            texto_descifrado = descifrar_texto(texto_cifrado)
+
+            # Guardar en historial
+            cursor.execute(
+                "INSERT INTO historial (usuario_id, texto_id, token, fecha_consulta) VALUES (?, ?, ?, ?)",
+                (session["usuario_id"], texto_id, token, datetime.now())
+            )
+
+            conexion.commit()
+            conexion.close()
+
+            return f"""
+            Texto original: {texto_original} <br>
+            Texto descifrado: {texto_descifrado} <br>
+            Fecha: {fecha}
+            """
+
+        conexion.close()
+        return "Token no encontrado"
+
+    return render_template("descifrar.html")
 
 
 # EJECUCIÓN DE LA APP
